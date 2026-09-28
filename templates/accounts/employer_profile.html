@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Company Profile - EMS PRO{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <div class="list-group">
+            <a href="{% url 'employer_dashboard' %}" class="list-group-item list-group-item-action">Dashboard</a>
+            <a href="{% url 'job_create' %}" class="list-group-item list-group-item-action">Post a Job</a>
+            <a href="{% url 'employer_profile' %}" class="list-group-item list-group-item-action active">Company Profile</a>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-dark text-white">
+                <h4 class="mb-0">Company Information</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <h5 class="mt-3">Company Details</h5>
+                    <hr>
+                    {{ c_form.as_p }}
+                    
+                    <h5 class="mt-4">Your Position</h5>
+                    <hr>
+                    {{ p_form.as_p }}
+                    
+                    <button type="submit" class="btn btn-primary mt-3">Save Information</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

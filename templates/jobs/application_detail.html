@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Application Details{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Application Information</h4>
+                <span class="badge {% if app.status == 'Selected' %}bg-success{% elif app.status == 'Rejected' %}bg-danger{% else %}bg-info text-dark{% endif %} fs-6">
+                    {{ app.status }}
+                </span>
+            </div>
+            <div class="card-body">
+                <h5 class="text-primary">{{ app.job.title }}</h5>
+                <h6 class="text-muted">{{ app.job.company.name }}</h6>
+                <hr>
+                
+                <h5 class="mt-4">Cover Letter</h5>
+                <div class="p-3 bg-light rounded">
+                    {{ app.cover_letter|linebreaks|default:"<p class='text-muted'>No cover letter provided.</p>" }}
+                </div>
+                
+                <h5 class="mt-4">Resume</h5>
+                {% if app.resume %}
+                    <a href="{{ app.resume.url }}" target="_blank" class="btn btn-outline-primary"><i class="bi bi-file-earmark-pdf"></i> View/Download Resume</a>
+                {% else %}
+                    <p class="text-muted">No resume uploaded.</p>
+                {% endif %}
+                
+                {% if app.employer_notes %}
+                <h5 class="mt-4">Employer Notes / Feedback</h5>
+                <div class="p-3 bg-warning bg-opacity-25 rounded border border-warning">
+                    {{ app.employer_notes|linebreaks }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if is_employer %}
+        <div class="card shadow-sm mb-4 border-primary">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Update Application Status</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">Update Status & Notes</button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-secondary text-white">Applicant Profile</div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>Name:</strong> <br>{{ app.applicant.user.get_full_name|default:app.applicant.user.username }}</li>
+                <li class="list-group-item"><strong>Email:</strong> <br><a href="mailto:{{ app.applicant.user.email }}">{{ app.applicant.user.email }}</a></li>
+                <li class="list-group-item"><strong>Phone:</strong> <br>{{ app.applicant.phone|default:"Not provided" }}</li>
+                <li class="list-group-item"><strong>Location:</strong> <br>{{ app.applicant.city|default:"Not provided" }}</li>
+                {% if is_employer %}
+                <li class="list-group-item"><strong>Education:</strong> <br>{{ app.applicant.education|linebreaks|default:"Not provided" }}</li>
+                <li class="list-group-item"><strong>Experience:</strong> <br>{{ app.applicant.experience|linebreaks|default:"Not provided" }}</li>
+                <li class="list-group-item"><strong>Skills:</strong> <br>{{ app.applicant.skills|default:"Not provided" }}</li>
+                {% endif %}
+            </ul>
+        </div>
+        
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <p class="mb-1"><strong>Applied Date:</strong> {{ app.application_date|date:"F d, Y H:i" }}</p>
+                <p class="mb-0"><strong>Last Updated:</strong> {{ app.last_updated_date|date:"F d, Y H:i" }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

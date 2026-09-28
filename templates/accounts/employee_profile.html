@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile - EMS PRO{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <div class="list-group">
+            <a href="{% url 'employee_dashboard' %}" class="list-group-item list-group-item-action">Dashboard</a>
+            <a href="{% url 'employee_profile' %}" class="list-group-item list-group-item-action active">Edit Profile</a>
+            <a href="{% url 'employee_applications' %}" class="list-group-item list-group-item-action">My Applications</a>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">
+                <h4 class="mb-0">Update Profile</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">Save Profile</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

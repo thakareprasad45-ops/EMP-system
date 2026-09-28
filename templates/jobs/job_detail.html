@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}{{ job.title }} - EMS PRO{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h2 class="card-title">{{ job.title }}</h2>
+                <h5 class="text-muted mb-4">{{ job.company.name }}</h5>
+                
+                <h5 class="mt-4">Job Description</h5>
+                <p>{{ job.description|linebreaks }}</p>
+                
+                <h5 class="mt-4">Requirements</h5>
+                <p>{{ job.requirements|linebreaks }}</p>
+                
+                <h5 class="mt-4">Responsibilities</h5>
+                <p>{{ job.responsibilities|linebreaks }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-dark text-white">Job Overview</div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>Location:</strong> <span class="float-end">{{ job.location }}</span></li>
+                <li class="list-group-item"><strong>Type:</strong> <span class="float-end">{{ job.employment_type }}</span></li>
+                <li class="list-group-item"><strong>Salary:</strong> <span class="float-end">{{ job.salary_range }}</span></li>
+                <li class="list-group-item"><strong>Experience:</strong> <span class="float-end">{{ job.experience_required }}</span></li>
+                <li class="list-group-item"><strong>Deadline:</strong> <span class="float-end">{{ job.application_deadline }}</span></li>
+                <li class="list-group-item"><strong>Status:</strong> <span class="float-end">{{ job.status }}</span></li>
+            </ul>
+            <div class="card-footer bg-white">
+                {% if user.is_authenticated %}
+                    {% if user.is_employee %}
+                        {% if has_applied %}
+                            <button class="btn btn-secondary w-100" disabled>Already Applied</button>
+                        {% elif job.status == 'Open' %}
+                            <a href="{% url 'apply_job' job.pk %}" class="btn btn-primary w-100">Apply Now</a>
+                        {% else %}
+                            <button class="btn btn-secondary w-100" disabled>Applications Closed</button>
+                        {% endif %}
+                    {% elif user.is_employer and user.employer_profile.company == job.company %}
+                        <a href="{% url 'job_edit' job.pk %}" class="btn btn-warning w-100 mb-2">Edit Job</a>
+                        <a href="{% url 'job_applicants' job.pk %}" class="btn btn-info w-100">View Applicants</a>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary w-100">Login to Apply</a>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">About Company</div>
+            <div class="card-body">
+                <h6>{{ job.company.name }}</h6>
+                <p class="small">{{ job.company.description|truncatewords:20 }}</p>
+                {% if job.company.website %}
+                <a href="{{ job.company.website }}" target="_blank" class="btn btn-outline-secondary btn-sm">Website</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

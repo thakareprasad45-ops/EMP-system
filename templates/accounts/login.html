@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - EMS PRO{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card mt-5 shadow-sm">
+            <div class="card-header bg-dark text-white">
+                <h4 class="mb-0">Login</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary w-100">Login</button>
+                </form>
+                
+                <div class="mt-3 text-center">
+                    <p>Don't have an account?</p>
+                    <a href="{% url 'register_employee' %}" class="btn btn-outline-secondary btn-sm">Sign up as Employee</a>
+                    <a href="{% url 'register_employer' %}" class="btn btn-outline-secondary btn-sm">Sign up as Employer</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
